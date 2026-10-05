@@ -64,7 +64,7 @@ A small fine-tuning dataset can influence how a model responds without giving it
 
 ## 📓 Notebook
 
-`Shruti_LoRA_Finetuning_Notebook.ipynb`
+`customer_support_bot_lora.ipynb`
 
 The notebook contains the dataset preparation, model setup, LoRA configuration, training, and inference experiments.
 
@@ -75,7 +75,7 @@ The notebook contains the dataset preparation, model setup, LoRA configuration, 
 The notebook can be opened in Google Colab with a compatible GPU runtime.
 
 1. Open [Google Colab](https://colab.research.google.com)
-2. Upload `Shruti_LoRA_Finetuning_Notebook.ipynb`
+2. Upload `customer_support_bot_lora.ipynb`
 3. Select a GPU runtime
 4. Run the cells from top to bottom
 
