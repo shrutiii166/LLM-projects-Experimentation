@@ -1,0 +1,128 @@
+# Project 3 — RAG Pipeline
+
+### Retrieval-Augmented Generation from Scratch
+
+**What actually happens inside a RAG pipeline when you don't use a framework to hide the steps?**
+
+This experiment builds a basic RAG pipeline using Python, Sentence Transformers, FAISS, and TinyLlama.
+
+---
+
+## 🧪 The Experiment
+
+The pipeline takes a text document, breaks it into smaller chunks, converts those chunks into embeddings, and stores them in a FAISS index.
+
+When a question is asked:
+
+1. The question is converted into an embedding
+2. FAISS searches for the closest chunks
+3. The retrieved chunks are passed to TinyLlama as context
+4. The model generates an answer
+5. The retrieved chunks are displayed alongside the answer
+
+The notebook also includes interview-related questions as test cases, since that gave me a practical set of questions to experiment with.
+
+---
+
+## 🔍 The Pipeline
+
+```text
+Document
+   ↓
+Chunks
+   ↓
+Sentence Transformer embeddings
+   ↓
+FAISS vector index
+   ↓
+Question → embedding
+   ↓
+Similarity search
+   ↓
+Relevant chunks
+   ↓
+TinyLlama + retrieved context
+   ↓
+Generated answer
+```
+
+The embedding model used in the experiment produces **384-dimensional vectors** for the text chunks.
+
+---
+
+## ⚙️ Technical Details
+
+| Component            | Choice              |
+| -------------------- | ------------------- |
+| Embedding model      | `all-MiniLM-L6-v2`  |
+| Embedding dimensions | 384                 |
+| Vector search        | FAISS `IndexFlatL2` |
+| Chunks retrieved     | Top 3               |
+| Base LLM             | TinyLlama 1.1B      |
+| Quantization         | 4-bit               |
+| Temperature          | 0.3                 |
+
+---
+
+## 🧠 The Interesting Part
+
+The retrieval results were generally relevant for the questions I tested.
+
+But getting the **right chunks did not always mean getting a fully grounded answer**.
+
+In some tests, TinyLlama added information that wasn't present in the retrieved context. That made the experiment useful beyond simply getting a RAG pipeline to run.
+
+It showed the difference between:
+
+**retrieving relevant information**
+and
+**getting the LLM to use that information faithfully.**
+
+---
+
+## 🛠️ Why Build It Without LangChain?
+
+For this experiment, I wanted to see the individual pieces instead of starting with a high-level RAG abstraction.
+
+That meant working directly with:
+
+* Text chunking
+* Sentence Transformer embeddings
+* FAISS vector search
+* Retrieved context
+* Prompt construction
+* LLM generation
+
+This made it easier to inspect what was happening at each stage.
+
+---
+
+## 📓 Notebook
+
+`rag_pipeline_from_scratch.ipynb`
+
+The notebook contains the complete pipeline, retrieval tests, generated responses, and source chunks used for each query.
+
+---
+
+## ▶️ Running It
+
+The notebook can be opened in Google Colab with a compatible GPU runtime.
+
+1. Open [Google Colab](https://colab.research.google.com)
+2. Upload `rag_pipeline_from_scratch.ipynb`
+3. Select a GPU runtime
+4. Run the cells from top to bottom
+5. Try changing the test question in the final section
+
+The notebook contains the text used for the experiment, so there is no separate knowledge-base file required.
+
+---
+
+## 🛠️ Stack
+
+```text
+Python · Sentence Transformers · FAISS · NumPy
+HuggingFace Transformers · TinyLlama 1.1B
+BitsAndBytes · Google Colab
+```
