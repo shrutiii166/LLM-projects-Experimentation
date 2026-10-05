@@ -1,0 +1,109 @@
+# Project 2 — HR Policy Bot
+
+### Domain Adaptation with QLoRA
+
+**What happens when the same fine-tuning approach is given a completely different domain?**
+
+Project 2 builds on the customer-support experiment by fine-tuning TinyLlama 1.1B on a small set of HR policy instruction-response examples.
+
+---
+
+## 🧪 The Experiment
+
+The dataset contains **20 HR policy instruction-response pairs** covering topics such as:
+
+* Leave policies
+* Reimbursements and expenses
+* Resignation and notice periods
+* Salary and provident fund
+* Workplace policies
+* Employee benefits
+* Internal transfers and referrals
+
+The idea was to see whether the model would pick up the language and response patterns of an HR assistant when exposed to a small domain-specific dataset.
+
+---
+
+## ⚙️ What Changed from Project 1?
+
+I kept the same base model and general fine-tuning approach, but changed a few settings to see how the model behaved.
+
+| Component         | Project 1 | Project 2 |
+| ----------------- | --------: | --------: |
+| LoRA rank         |         8 |        16 |
+| LoRA alpha        |        16 |        32 |
+| Training examples |        10 |        20 |
+| Training epochs   |        30 |        30 |
+| Learning rate     |      3e-4 |      3e-4 |
+
+Increasing the LoRA rank was an experiment to give the adapter more trainable capacity. It wasn't treated as a guarantee of better performance.
+
+---
+
+## 📉 Training
+
+The training loss decreased substantially during the 30 epochs:
+
+| Step |   Loss |
+| ---: | -----: |
+|    5 | 1.9818 |
+|   50 |      — |
+|  100 |      — |
+|  150 | 0.0354 |
+
+The low training loss showed that the model was fitting the small training dataset. However, the generated responses were more useful for evaluating the experiment than the loss number alone.
+
+---
+
+## 🔍 The Interesting Part
+
+The model learned to produce responses that **looked like HR support answers**, but some responses included information that wasn't actually present in the training examples.
+
+For example, when asked about different leave policies, the model sometimes generated specific forms, timelines, or organisational processes that had not been provided to it.
+
+So the experiment highlighted an important distinction:
+
+**Fine-tuning can change how a model responds without making the model a reliable source of facts.**
+
+For a real HR assistant, the policy information would need to come from an authoritative source, such as a properly grounded RAG system.
+
+---
+
+## 🧠 What I Learned
+
+* How changing LoRA rank affects the configuration of a fine-tuning experiment
+* How a small domain-specific dataset can influence model behaviour
+* Why training loss alone isn't enough to judge generated responses
+* How a model can produce convincing but unsupported information
+* Why domain-specific assistants may need retrieval or other grounding mechanisms
+
+---
+
+## 📓 Notebook
+
+`hr_policy_bot_lora.ipynb`
+
+The notebook contains the dataset preparation, model configuration, fine-tuning, and response testing.
+
+---
+
+## ▶️ Running It
+
+The notebook can be opened in Google Colab with a compatible GPU runtime.
+
+1. Open [Google Colab](https://colab.research.google.com)
+2. Upload `hr_policy_bot_lora.ipynb`
+3. Select a GPU runtime
+4. Run the cells from top to bottom
+
+Training time will depend on the runtime available.
+
+---
+
+## 🛠️ Stack
+
+```text
+Python · PyTorch · HuggingFace Transformers
+PEFT · TRL · BitsAndBytes
+TinyLlama 1.1B · QLoRA · SFTTrainer
+```
